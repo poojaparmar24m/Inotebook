@@ -1,12 +1,12 @@
+require("dotenv").config();
 const express = require("express");
 const User = require("../modals/Users");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "hello";
-
-// create a user using :POST "/api/auth/createUser".
+const fetchUser = require("../middleware/fetchUser");
+// Route 1: create a user using :POST "/api/auth/createUser".
 router.post(
   "/createUser",
   [
@@ -46,8 +46,8 @@ router.post(
         },
       };
 
-      const auth_token = jwt.sign(data, JWT_SECRET);
-      // console.log(jwtData);
+      const auth_token = jwt.sign(data, process.env.JWT_SECRET_KEY);
+
       res.json({ auth_token });
       // .then((user) => res.json(user))
       // .catch((err) => res.json({ message: err.message }));
@@ -58,7 +58,7 @@ router.post(
   }
 );
 
-// Authenticate a user using :POST "/api/auth/login".
+// Route 2:Authenticate a user using :POST "/api/auth/login".
 
 router.post(
   "/login",
@@ -95,7 +95,7 @@ router.post(
           id: user.id,
         },
       };
-      const auth_token = jwt.sign(data, JWT_SECRET);
+      const auth_token = jwt.sign(data, process.env.JWT_SECRET_KEY);
       res.json({ auth_token });
     } catch (error) {
       console.log(error.message);
@@ -103,5 +103,17 @@ router.post(
     }
   }
 );
+
+//Route 3 :get logged-in  a user details  using :POST "/api/auth/getUser". login required.
+router.post("/getUser", fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("-password");
+    res.send(user);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 module.exports = router;
