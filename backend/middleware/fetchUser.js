@@ -12,6 +12,7 @@ const fetchUser = (req, res, next) => {
     const data = jwt.verify(token, process.env.JWT_SECRET_KEY);
     // console.log(data);
     req.user = data.user;
+    // console.log(data.user);
     next();
   } catch (error) {
     return res.status(500).send({ error: "internal server error" });
