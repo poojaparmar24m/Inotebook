@@ -81,7 +81,7 @@ router.put("/updateNote/:id", fetchUser, async (req, res) => {
     res.json({ note });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send(error);
   }
 });
 
