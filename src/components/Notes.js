@@ -34,10 +34,6 @@ const Notes = () => {
   };
   const handleChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
-    // setTimeout(() => {
-    //   e.target.value = "";
-    // }, 5000);
-    // e.target.description.value = "";
   };
   return (
     <>
