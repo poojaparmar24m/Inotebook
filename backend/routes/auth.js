@@ -30,12 +30,10 @@ router.post(
       let user = await User.findOne({ email });
       if (user) {
         success = false;
-        return res
-          .status(400)
-          .json({
-            success,
-            error: "sorry a user with this email already exists",
-          });
+        return res.status(400).json({
+          success,
+          error: "sorry a user with this email already exists",
+        });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -50,6 +48,7 @@ router.post(
           id: user.id,
         },
       };
+      // console.log(user.id);
 
       const auth_token = jwt.sign(data, process.env.JWT_SECRET_KEY);
       success = true;
